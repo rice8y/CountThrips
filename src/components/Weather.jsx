@@ -19,7 +19,6 @@ const Weather = () => {
       const response = await fetch(url, {
         headers: {
           'User-Agent': 'CountThrips',
-          'Access-Control-Allow-Origin': '*', 
         },
       });
 

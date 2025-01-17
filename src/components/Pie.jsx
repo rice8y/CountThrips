@@ -17,7 +17,7 @@ export default function BasicPie() {
         .then((json) => {
           const clientIP = json.ip;
           // console.log("Client IP:", clientIP);
-          const apiUrl = "https://rice8y.pythonanywhere.com/api/result"
+          const apiUrl = "https://rice8y.pythonanywhere.com/api/result/"
 
           fetch(apiUrl, {
             mode: "cors",

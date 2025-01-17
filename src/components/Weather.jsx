@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import axios from 'axios';
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -16,24 +17,19 @@ const Weather = () => {
     const lon = 132.80385277259467;
     const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
     try {
-      const response = await fetch(url, {
+      const response = await axios.get(url, {
         headers: {
           'User-Agent': 'CountThrips',
         },
       });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setWeatherData(data);
+      setWeatherData(response.data);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchWeather();

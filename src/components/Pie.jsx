@@ -7,44 +7,37 @@ export default function BasicPie() {
   const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
-    const cachedData = localStorage.getItem('pieChartData');
-    if (cachedData) {
-      setData(JSON.parse(cachedData));
-      setLoading(false);
-    } else {
-      fetch("https://api64.ipify.org?format=json")
-        .then((res) => res.json())
-        .then((json) => {
-          const clientIP = json.ip;
-          // console.log("Client IP:", clientIP);
-          const apiUrl = "https://rice8y.pythonanywhere.com/api/result/"
+    setLoading(true); // Always set loading to true when fetching
+    fetch("https://api64.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((json) => {
+        const clientIP = json.ip;
+        const apiUrl = "https://rice8y.pythonanywhere.com/api/result/";
 
-          fetch(apiUrl, {
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              const latestData = data
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
-
-              const result = latestData ? [latestData.cnt1, latestData.cnt2] : [0, 0];
-              setData(result);
-              localStorage.setItem('pieChartData', JSON.stringify(result));
-              setLoading(false);
-            })
-            .catch((err) => {
-              setError(err);
-              setLoading(false);
-            });
+        fetch(apiUrl, {
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((err) => {
-          setError(err);
-          setLoading(false);
-        });
-    }
+          .then((response) => response.json())
+          .then((data) => {
+            const latestData = data
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
+
+            const result = latestData ? [latestData.cnt1, latestData.cnt2] : [0, 0];
+            setData(result);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err);
+            setLoading(false);
+          });
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {

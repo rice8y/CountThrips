@@ -33,47 +33,40 @@ export default function BasicLineChart() {
   }, []);
 
   React.useEffect(() => {
-    const cachedData = localStorage.getItem('chartData');
-    if (cachedData) {
-      setData(JSON.parse(cachedData));
-      setLoading(false);
-    } else {
-      fetch("https://api64.ipify.org?format=json")
-        .then((res) => res.json())
-        .then((json) => {
-          const clientIP = json.ip;
-          // console.log("Client IP:", clientIP);
-          const apiUrl = "https://rice8y.pythonanywhere.com/api/result/"
+    setLoading(true); // Always set loading to true when fetching
+    fetch("https://api64.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((json) => {
+        const clientIP = json.ip;
+        const apiUrl = "https://rice8y.pythonanywhere.com/api/result/";
 
-          fetch(apiUrl, {
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              const sortedData = data
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .slice(0, 7)
-                .map((item) => ({
-                  ...item,
-                  timestamp: convertToJST(item.timestamp),
-                }));
-              setData(sortedData.reverse());
-              localStorage.setItem('chartData', JSON.stringify(sortedData));
-              setLoading(false);
-            })
-            .catch((err) => {
-              setError(err);
-              setLoading(false);
-            });
+        fetch(apiUrl, {
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((err) => {
-          setError(err);
-          setLoading(false);
-        });
-    }
+          .then((response) => response.json())
+          .then((data) => {
+            const sortedData = data
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+              .slice(0, 7)
+              .map((item) => ({
+                ...item,
+                timestamp: convertToJST(item.timestamp),
+              }));
+            setData(sortedData.reverse());
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err);
+            setLoading(false);
+          });
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
   }, []);
 
   dayjs.extend(utc);

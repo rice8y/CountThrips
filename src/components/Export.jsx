@@ -16,58 +16,48 @@ export default function CustomDataGrid() {
   const [imageUrl, setImageUrl] = React.useState("");
   const [date, setDate] = React.useState("");
 
-  const cachedData = localStorage.getItem('apiData');
-
   React.useEffect(() => {
-    if (cachedData) {
-      const parsedData = JSON.parse(cachedData);
-      setRows(parsedData);
-      setLoading(false);
-    } else {
-      fetch("https://api64.ipify.org?format=json")
-        .then((res) => res.json())
-        .then((json) => {
-          const clientIP = json.ip;
-          // console.log("Client IP:", clientIP);
-          const apiUrl = "https://rice8y.pythonanywhere.com/api/result/"
-          const baseImageUrl = "https://rice8y.pythonanywhere.com/"
+    setLoading(true); // Always set loading to true when fetching
+    fetch("https://api64.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((json) => {
+        const clientIP = json.ip;
+        const apiUrl = "https://rice8y.pythonanywhere.com/api/result/";
+        const baseImageUrl = "https://rice8y.pythonanywhere.com/";
 
-          setBaseImageUrl(baseImageUrl);
+        setBaseImageUrl(baseImageUrl);
 
-          fetch(apiUrl, {
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              const sortedData = data
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .slice(0, 7)
-                .map((item, index) => ({
-                  id: index + 1,
-                  date: convertToJST(item.timestamp),
-                  cnt1: item.cnt1,
-                  cnt2: item.cnt2,
-                  image: `${baseImageUrl}${item.image}`,
-                }));
-
-              localStorage.setItem('apiData', JSON.stringify(sortedData));
-
-              setRows(sortedData);
-              setLoading(false);
-            })
-            .catch((err) => {
-              setError(err);
-              setLoading(false);
-            });
+        fetch(apiUrl, {
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((err) => {
-          setError(err);
-          setLoading(false);
-        });
-    }
+          .then((response) => response.json())
+          .then((data) => {
+            const sortedData = data
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+              .slice(0, 7)
+              .map((item, index) => ({
+                id: index + 1,
+                date: convertToJST(item.timestamp),
+                cnt1: item.cnt1,
+                cnt2: item.cnt2,
+                image: `${baseImageUrl}${item.image}`,
+              }));
+
+            setRows(sortedData);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err);
+            setLoading(false);
+          });
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
   }, []);
 
   dayjs.extend(utc);

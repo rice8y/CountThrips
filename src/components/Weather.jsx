@@ -11,46 +11,46 @@ const Weather = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchWeather = async () => {
-    const lat = 33.8817233746384;
-    const lon = 132.80385277259467;
-    const url = `https://rice8y.pythonanywhere.com/api/weather?lat=${lat}&lon=${lon}`;
-  
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
   // const fetchWeather = async () => {
   //   const lat = 33.8817233746384;
   //   const lon = 132.80385277259467;
-  //   const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+  //   const url = `https://rice8y.pythonanywhere.com/api/weather?lat=${lat}&lon=${lon}`;
+  
   //   try {
-  //     const response = await fetch(url, {
-  //       headers: {
-  //         'User-Agent': 'CountThrips',
-  //       },
-  //     });
-
+  //     const response = await fetch(url);
   //     if (!response.ok) {
-  //       throw new Error(`Error: ${response.status}`);
+  //       throw new Error(`HTTP error! status: ${response.status}`);
   //     }
-
   //     const data = await response.json();
-  //     setWeatherData(data);
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error('Error:', error);
   //   }
   // };
+
+  const fetchWeather = async () => {
+    const lat = 33.8817233746384;
+    const lon = 132.80385277259467;
+    const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'CountThrips',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setWeatherData(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchWeather();

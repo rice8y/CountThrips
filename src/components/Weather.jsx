@@ -14,28 +14,19 @@ const Weather = () => {
   const fetchWeather = async () => {
     const lat = 33.8817233746384;
     const lon = 132.80385277259467;
-    const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
-    try {
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'CountThrips',
-        },
-      });
+    const url = `https://rice8y.pythonanywhere.com/api/weather?lat=${lat}&lon=${lon}`;
   
+    try {
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const data = await response.json();
-      setWeatherData(data);
-    } catch (err) {
-      console.error('Fetch Error:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      console.log(data);
+    } catch (error) {
+      console.error('Error:', error);
     }
-  };  
-
+  };
 
   useEffect(() => {
     fetchWeather();

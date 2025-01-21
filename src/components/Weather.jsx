@@ -16,31 +16,26 @@ const Weather = () => {
     const lon = 132.80385277259467;
     const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
     try {
-      console.log(`Fetching weather data from: ${url}`);
       const response = await fetch(url, {
         headers: {
-          'User-Agent': navigator.userAgent || 'CountThrips',
-        },        
+          'User-Agent': 'CountThrips',
+        },
       });
   
       if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
   
       const data = await response.json();
-      console.log('Weather data fetched successfully:', data);
       setWeatherData(data);
     } catch (err) {
       console.error('Fetch Error:', err);
-      setError({
-        message: `Fetch Error: ${err.message}`,
-        stack: err.stack || 'No stack trace available',
-      });
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-  
+  };  
+
 
   useEffect(() => {
     fetchWeather();

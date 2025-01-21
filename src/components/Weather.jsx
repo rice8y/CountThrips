@@ -22,21 +22,25 @@ const Weather = () => {
           'User-Agent': 'CountThrips',
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       console.log('Weather data fetched successfully:', data);
       setWeatherData(data);
     } catch (err) {
-      console.error('Error fetching weather data:', err);
-      setError(`Error: ${err.message}. Stack: ${err.stack}`);
+      console.error('Fetch Error:', err);
+      setError({
+        message: `Fetch Error: ${err.message}`,
+        stack: err.stack || 'No stack trace available',
+      });
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchWeather();
@@ -52,11 +56,12 @@ const Weather = () => {
         <Typography variant="h6" color="error">
           データの取得中にエラーが発生しました。
         </Typography>
-        <Typography variant="body1">{error}</Typography>
+        <Typography variant="body1">メッセージ: {error.message}</Typography>
+        <Typography variant="body2">スタックトレース: {error.stack}</Typography>
       </Box>
     );
   }
-
+  
   dayjs.extend(utc);
   dayjs.extend(timezone);
 

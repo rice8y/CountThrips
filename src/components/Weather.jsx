@@ -19,8 +19,8 @@ const Weather = () => {
       console.log(`Fetching weather data from: ${url}`);
       const response = await fetch(url, {
         headers: {
-          'User-Agent': 'CountThrips',
-        },
+          'User-Agent': navigator.userAgent || 'CountThrips',
+        },        
       });
   
       if (!response.ok) {
